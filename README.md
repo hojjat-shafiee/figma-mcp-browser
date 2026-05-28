@@ -54,21 +54,31 @@ Instead of hitting the REST API, this extension injects a script into the Figma 
 
 ## Installation
 
-### 1. Load the Extension
+### 1. Download the Extension
 
-1. Clone or download this repository.
+Go to the [Releases page](../../releases/latest) and download:
+
+- **`figma-mcp-bridge-{version}.zip`** — the Chrome extension
+- **`figma-mcp-server-{version}.tar.gz`** — the local MCP server
+
+Then load the extension in Chrome:
+
+1. Unzip `figma-mcp-bridge-{version}.zip` into a local folder.
 2. Open Chrome and go to `chrome://extensions/`.
 3. Enable **Developer mode** (top-right toggle).
-4. Click **Load unpacked** and select the root folder of this repository (the one containing `manifest.json`).
+4. Click **Load unpacked** and select the unzipped folder.
 5. The **Figma MCP Bridge** extension card will appear.
+
+> **Alternatively**, clone the repository and load the root folder directly as an unpacked extension — useful if you want to modify the source.
 
 ### 2. Start the MCP Server
 
+Extract `figma-mcp-server-{version}.tar.gz`, then:
+
 ```bash
-cd server
 nvm use 22
 npm install
-npm start
+node index.js
 ```
 
 The server listens on `ws://127.0.0.1:9223` for the extension and communicates via `stdio` with your AI client.
@@ -84,7 +94,7 @@ The server listens on `ws://127.0.0.1:9223` for the extension and communicates v
   "mcpServers": {
     "figma-browser-bridge": {
       "command": "node",
-      "args": ["/absolute/path/to/figma-mcp-browser/server/index.js"]
+      "args": ["/absolute/path/to/server/index.js"]
     }
   }
 }
@@ -97,7 +107,7 @@ The server listens on `ws://127.0.0.1:9223` for the extension and communicates v
     "servers": {
       "figma-browser-bridge": {
         "command": "node",
-        "args": ["/absolute/path/to/figma-mcp-browser/server/index.js"]
+        "args": ["/absolute/path/to/server/index.js"]
       }
     }
   }
@@ -161,6 +171,7 @@ Each node is serialized recursively, including all children:
   "id": "482:9088",
   "name": "🟪 OUR PROJECTS",
   "type": "FRAME",
+  "visible": true,
   "dimensions": {
     "width": 1440,
     "height": 1120,
@@ -180,6 +191,7 @@ Each node is serialized recursively, including all children:
       "id": "482:9090",
       "name": "so...what have we built?",
       "type": "TEXT",
+      "visible": true,
       "textContext": {
         "characters": "so...what have we built?",
         "fontSize": 60,
@@ -198,6 +210,7 @@ Each node is serialized recursively, including all children:
 | `id` | Figma node ID (colon format) |
 | `name` | Layer name as shown in the Figma layers panel |
 | `type` | Node type: `FRAME`, `TEXT`, `RECTANGLE`, `VECTOR`, `LINE`, etc. |
+| `visible` | `false` when the layer is hidden in the editor (eye icon off); `true` otherwise |
 | `dimensions` | Width, height, and absolute canvas position |
 | `autoLayout` | Direction, item spacing, and padding (null if not an auto-layout frame) |
 | `fills` | Array of fill objects with type, color (RGB 0–255), opacity, and visibility |
