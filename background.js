@@ -29,7 +29,7 @@ function connectWebSocket() {
 
   socket.onopen = () => {
     console.log("[Figma MCP] WebSocket connection established successfully.");
-    reconnectDelay = 1000; // Reset reconnection timer
+    reconnectDelay = 1000; // Reset backoff on successful connection
   };
 
   socket.onmessage = async (event) => {
@@ -59,10 +59,11 @@ function connectWebSocket() {
 
 function scheduleReconnect() {
   socket = null;
+  const delay = reconnectDelay;
+  reconnectDelay = Math.min(reconnectDelay * 2, MAX_RECONNECT_DELAY);
   setTimeout(() => {
-    reconnectDelay = Math.min(reconnectDelay * 2, MAX_RECONNECT_DELAY);
     connectWebSocket();
-  }, reconnectDelay);
+  }, delay);
 }
 
 // 2. Respond back to WebSocket

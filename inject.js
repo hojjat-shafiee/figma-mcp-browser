@@ -148,6 +148,9 @@
       id: node.id,
       name: node.name,
       type: node.type,
+      // false only when the layer is explicitly hidden in the editor (eye icon off).
+      // Defaults to true when the property is absent (e.g. page root nodes).
+      visible: node.visible !== false,
       dimensions: getDimensions(node),
       autoLayout: getAutoLayout(node),
       fills: serializeFills(node.fills, figma),
