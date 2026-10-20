@@ -31,6 +31,16 @@
     window.__figmaMCPInstance = figmaObj;
     console.log("[Figma MCP] figma object registered. Bridge is ready.");
   };
+  window.__figmaMCPRegister = window.injectFigma;
+
+  // Proactive auto-detection: continually check if window.figma or canvas iframe mounts
+  const autoDetectTimer = setInterval(() => {
+    const f = findFigma();
+    if (f) {
+      clearInterval(autoDetectTimer);
+      console.log("[Figma MCP] window.figma auto-detected successfully. Bridge is ready.");
+    }
+  }, 1000);
 
   function waitForFigma(timeoutMs = 8000) {
     return new Promise((resolve, reject) => {

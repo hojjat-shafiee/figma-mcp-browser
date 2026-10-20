@@ -7,7 +7,8 @@
     "activeTab",
     "scripting",
     "alarms",
-    "tabs"
+    "tabs",
+    "cookies"
   ],
   "host_permissions": [
     "https://*.figma.com/*"

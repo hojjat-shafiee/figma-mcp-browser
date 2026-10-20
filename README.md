@@ -14,6 +14,7 @@ Instead of hitting the REST API, this extension injects a script into the Figma 
 - **WebSocket Bridge** — Connects to a local MCP server at `ws://127.0.0.1:9223` with automatic reconnect and exponential backoff.
 - **Real-Time Selection Tracking** — Emits `SELECTION_CHANGED` events when you select a different layer in Figma.
 - **Resilient Service Worker** — Keep-alive ports and alarm heartbeats prevent the MV3 service worker from being suspended.
+- **Session Auto-Sync** — Automatically extracts authenticated session cookies (`figma.session`, `__Host-figma.authn`, etc.) from the last completed Figma login (Figma Desktop or Chrome) and syncs them directly into the MCP browser (`chrome-devtools-mcp`), bypassing login screens entirely.
 
 ---
 
@@ -159,6 +160,35 @@ https://www.figma.com/design/AbcFcJrZvvOf6LmK2P8t0W/My-File?node-id=474-11039
 
 #### `get_active_selection`
 Fetch the node currently selected in the active Figma tab (no arguments needed). The extension tracks URL-based selection changes automatically via a 500ms poller.
+
+#### `get_session_status`
+Check the status of the local Figma session from the last completed login:
+- Authenticated user ID & account email
+- Account subscription plan (e.g. Starter)
+- Session expiration timestamp
+- Valid cookie count and source client (Figma Desktop / Chrome)
+
+#### `sync_figma_session`
+Extracts decrypted session cookies from the last completed login and syncs them directly into the local MCP browser user profile (`~/.cache/chrome-devtools-mcp/chrome-profile`). Allows automated browser tools (`navigate_page`, `take_snapshot`, etc.) to open and inspect private/authenticated Figma files without any login wall.
+
+---
+
+### Command-Line Session Utilities
+
+You can also run session utilities directly from the `server/` directory:
+
+```bash
+# Check current Figma login session status
+npm run session-status
+
+# Sync last completed Figma login session into MCP browser profile
+npm run sync-session
+
+# Or run via Python directly:
+python session_sync.py --status
+python session_sync.py --sync-mcp
+python session_sync.py --export figma_session.json
+```
 
 ---
 

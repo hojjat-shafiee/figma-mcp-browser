@@ -1,0 +1,11 @@
+{
+  "name": "figma-mcp-browser",
+  "version": "1.0.0",
+  "description": "Figma MCP Bridge Chrome Extension & Server",
+  "scripts": {
+    "start": "node server/index.js",
+    "sync-session": "python server/session_sync.py --sync-mcp",
+    "session-status": "python server/session_sync.py --status"
+  }
+}
+

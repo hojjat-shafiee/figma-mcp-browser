@@ -11,6 +11,7 @@ import {
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { WebSocketServer } from "ws";
+import { getFigmaSessionStatus, syncFigmaSessionToBrowser } from "./session_manager.js";
 
 // Local port for the browser extension to connect to
 const WEBSOCKET_PORT = 9223;
@@ -122,6 +123,22 @@ mcpServer.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {},
         },
       },
+      {
+        name: "get_session_status",
+        description: "Check the status of the Figma session from the last completed login (user ID, account email, expiration, and cookie validity).",
+        inputSchema: {
+          type: "object",
+          properties: {},
+        },
+      },
+      {
+        name: "sync_figma_session",
+        description: "Extract active Figma session cookies from the last completed login (Figma Desktop / Chrome) and sync them directly into the MCP browser profile.",
+        inputSchema: {
+          type: "object",
+          properties: {},
+        },
+      },
     ],
   };
 });
@@ -211,6 +228,28 @@ mcpServer.setRequestHandler(CallToolRequestSchema, async (request) => {
               null,
               2
             ),
+          },
+        ],
+      };
+    } else if (name === "get_session_status") {
+      console.error("[MCP Bridge] Tool Call: get_session_status");
+      const status = await getFigmaSessionStatus();
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(status, null, 2),
+          },
+        ],
+      };
+    } else if (name === "sync_figma_session") {
+      console.error("[MCP Bridge] Tool Call: sync_figma_session");
+      const syncResult = await syncFigmaSessionToBrowser();
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(syncResult, null, 2),
           },
         ],
       };

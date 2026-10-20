@@ -5,7 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "sync-session": "python session_sync.py --sync-mcp",
+    "session-status": "python session_sync.py --status"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.1",
