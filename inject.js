@@ -218,7 +218,7 @@
         try {
           let data;
           if (fetchSelection) {
-            data = queryActiveSelection();
+            data = await queryActiveSelection();
           } else {
             data = await queryNodeById(nodeId);
           }
